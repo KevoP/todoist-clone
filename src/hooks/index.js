@@ -28,7 +28,6 @@ export const useTasks = selectedProject => {
                 ...task.data(),
             }));
 
-
             setTasks(
                 selectedProject === 'NEXT_7'
                     ? newTasks.filter(
@@ -39,8 +38,6 @@ export const useTasks = selectedProject => {
 
             setArchivedTasks(newTasks.filter(task => task.archived !== true));
         });
-
-
 
         return () => unsubscribe();
     }, [selectedProject]);
@@ -55,7 +52,7 @@ export const useProjects = () => {
         firebase
             .firestore()
             .collection('projects')
-            // .where('userId', '==', 'JtVxjg9IDZGZSFzI2OVq')
+            .where('userId', '==', 'JtVxjg9IDZGZSFzI2OVq')
             .where('userId', '==', '1')
             .orderBy('projectId')
             .get()
@@ -65,7 +62,7 @@ export const useProjects = () => {
                     docId: project.id
                 }));
             
-                if(JSON>stringify(allProjects) !== JSON>stringify(projects)){
+                if( JSON.stringify(allProjects) !== JSON.stringify(projects) ){
                     setProjects(allProjects);
                 }
             });
