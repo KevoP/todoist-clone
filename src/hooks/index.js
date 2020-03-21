@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { firebase } from "../Firebase";
 import moment from 'moment';
 import { collatedTasksExist } from '../helpers';
-import { stringify } from "querystring";
 
 export const useTasks = selectedProject => {
     const [tasks, setTasks] = useState([]);
@@ -12,14 +11,16 @@ export const useTasks = selectedProject => {
         let unsubscribe = firebase
             .firestore()
             .collection('tasks')
-            .where('user_id', '==', 'JtVxjg9IDZGZSFzI2OVq');
+            .where('userId', '==', 'JtVxjg9IDZGZSFzI2OVq');
+
+
 
         unsubscribe = selectedProject && !collatedTasksExist(selectedProject) 
-            ? unsubscribe = unsubscribe.where('project_id', '==', selectedProject)
+            ? unsubscribe = unsubscribe.where('projectId', '==', selectedProject)
             : (selectedProject === 'TODAY')
-                ? (unsubscribe = unsubscribe.where('date', '==', moment.format('DD/MM/YYYY')))
+                ? (unsubscribe = unsubscribe.where('date', '==', moment().format('DD/MM/YYYY')))
                 : (selectedProject === 'INBOX' || selectedProject === 0)
-                    ? (unsubscribe = unsubscribe.where('date', '==', moment.format('')))
+                    ? (unsubscribe = unsubscribe.where('date', '==', moment().format('')))
                     : unsubscribe;
 
         unsubscribe = unsubscribe.onSnapshot(snapshot => {
@@ -53,7 +54,7 @@ export const useProjects = () => {
             .firestore()
             .collection('projects')
             .where('userId', '==', 'JtVxjg9IDZGZSFzI2OVq')
-            .where('userId', '==', '1')
+            // .where('userId', '==', '1')
             .orderBy('projectId')
             .get()
             .then(snapshot => {
