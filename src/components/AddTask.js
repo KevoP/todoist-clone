@@ -6,6 +6,8 @@ import { firebase } from '../Firebase';
 import { generatePushId } from '../helpers';
 
 import { useSelectedProjectValue } from '../context';
+import { ProjectOverlay } from "./ProjectOverlay";
+import { TaskDate } from "./TaskDate";
 
 
 export const AddTask = ({ showAddTaskMain = true, shouldShowMain = false, showQuickAddTask, setShowQuickAddTask }) => {
@@ -39,7 +41,7 @@ export const AddTask = ({ showAddTaskMain = true, shouldShowMain = false, showQu
             .firestore()
             .collection('tasks')
             .add({
-               project,
+               projectId,
                task,
                archived: false,
                date: collatedDate || taskDate,
@@ -70,20 +72,25 @@ export const AddTask = ({ showAddTaskMain = true, shouldShowMain = false, showQu
          {(showMain || showQuickAddTask) && (
             <div className="add-task__main" data-testid="add-task-main">
                {showQuickAddTask && (
-                  <div>
-                     <h2 className="header">Quick Add Task</h2>
-                     <span className="add-task__cancel-x"
-                        data-testid="add-task-quick-cancel"
-                        onClick={() => {
-                           setShowMain(false);
-                           setShowProjectOverlay(false);
-                           setShowQuickAddTask(false);
-                        }}>x</span>
-                  </div>
-
+                  <>
+                     <div data-testid="quick-add-task">
+                        <h2 className="header">Quick Add Task</h2>
+                        <span className="add-task__cancel-x"
+                           data-testid="add-task-quick-cancel"
+                           onClick={() => {
+                              setShowMain(false);
+                              setShowProjectOverlay(false);
+                              setShowQuickAddTask(false);
+                           }}>x</span>
+                     </div>
+                  </>
                )}
-               <p>ProjectOverlay here</p>
-               <p>Task Date here</p>
+               <ProjectOverlay setProject={setProject} 
+                  showProjectOverlay={showProjectOverlay} 
+                  setShowProjectOverlay={setShowProjectOverlay} />
+               <TaskDate setTaskDate={setTaskDate} 
+                  showTaskDate={showTaskDate} 
+                  setShowTaskDate={setShowTaskDate} />
                <input className="add-task__content" 
                   data-testid="add-task-content"
                   type="text"
@@ -93,7 +100,10 @@ export const AddTask = ({ showAddTaskMain = true, shouldShowMain = false, showQu
                <button className="add-task__submit"
                   type="button"
                   data-testid="add-task"
-                  onClick={()=> addTask()}>Add Task</button>
+                  onClick={() => (showQuickAddTask) ? addTask() && setShowQuickAddTask(false) : addTask()
+         }>
+            Add Task
+                  </button>
                {!showQuickAddTask && (   
                   <span className="add-task__cancel-x"
                      data-testid="add-task-main-cancel"
@@ -111,7 +121,7 @@ export const AddTask = ({ showAddTaskMain = true, shouldShowMain = false, showQu
                </span>
                <span className="add-task__date"
                   data-testid="show-task-date-overlay"
-                  onClick={() => setShowTaskDate(!setShowTaskDate)}>
+                  onClick={() => setShowTaskDate(!showTaskDate)}>
                   <FaRegCalendarAlt />   
                </span>
 

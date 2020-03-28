@@ -133,6 +133,8 @@ $generic-bg: #db4c3f;
         background-color: #282828;
         border-color: transparent;
     }
+
+    /* add more styles for dark mode? */
 }
 
 /* Header
@@ -463,14 +465,24 @@ header{
 ============================================ */
 .add-task{
    &__overlay{
-      background: rgba(102,102,102, .5);
+      background-color: rgba(0,0,0, .3);
       margin-bottom: auto;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh;
       z-index: 100;
       transition: opacity .2s ease-in;
+      position: absolute;
+
+      .task-date{
+         top: 144px;
+      }
+
+      .project-overlay{
+         width: calc(100% - 60px);
+         top: 144px;
+      }
 
       .add-task__main{
          overflow: visible;
@@ -480,6 +492,7 @@ header{
          background: white;
          position: absolute;
          top: 50%;
+         left: 50%;
          padding: 20px 30px;
          transform: translate(-50%, -50%);
 
@@ -558,7 +571,7 @@ header{
 
 /* Task Date
 ============================================ */
-.task{
+.task-date{
    @include box-overlay();
    background-color: #fff;
    width: 200px;
@@ -580,11 +593,22 @@ header{
 /* Project Overlay
 ============================================ */
 .project-overlay{
-   @include box-overlay;
+   @include box-overlay();
    background-color: #fff;
+
+   @include mq('900px'){
+      width: 200px;
+      right: 0;
+   }
    
    &__list li{
       @include task-item();
+      padding: 0;
+
+      div:nth-child(1){
+         width: 100%;
+         padding: 10px;
+      }
    }
 }
 
